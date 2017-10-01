@@ -1,0 +1,1 @@
+var obj = require('../modules/b.js')
