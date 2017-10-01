@@ -68,6 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var obj = __webpack_require__(1)
+console.log(obj)
 
 /***/ }),
 /* 1 */
@@ -83,7 +84,7 @@ module.exports = {
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports.a = 'aaaa'
+module.exports.a = 'cccccccccccccccc'
 
 /***/ })
 /******/ ]);
