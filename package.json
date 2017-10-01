@@ -8,5 +8,8 @@
   "author": "me <abcgg02@gmail.com>",
   "license": "ISC",
   "keywords": [],
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.16.1"
+  }
 }
