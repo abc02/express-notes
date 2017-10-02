@@ -1,3 +1,6 @@
+require('scss/toast.scss')
+
+
 function toast(message, time){
     this.message = message
     this.didTime = time || 1000
@@ -22,7 +25,6 @@ toast.prototype = {
         })
     }
 }
-
 
 function Toast(message, time){
     return new toast(message, time)
