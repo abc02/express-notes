@@ -1,1 +1,1 @@
-module.exports.a = 'cccccccccccccccc'
+module.exports.a = 'c'
