@@ -1,0 +1,15 @@
+/*
+index style 2017.10.4
+*/
+body{
+    background: #ccc
+}
+#header{
+    margin-bottom:3rem;
+    padding: 1.25rem 1rem;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #eee;
+    box-shadow: 0 .1em .3em rgba(0, 0, 0, .1);
+}

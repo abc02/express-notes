@@ -1,3 +1,5 @@
-var Toast = require('../modules/toast.js').Toast
+require('scss/index.scss')
 
-Toast('hello, word')
+
+
+

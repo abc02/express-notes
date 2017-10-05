@@ -13,12 +13,15 @@
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "express": "~4.15.5",
+    "fonts.css": "^1.5.0",
     "jquery": "^3.2.1",
     "morgan": "~1.9.0",
+    "normalize.css": "^7.0.0",
     "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
     "css-loader": "^0.28.7",
+    "file-loader": "^1.1.4",
     "node-sass": "^4.5.3",
     "onchange": "^3.2.1",
     "sass-loader": "^6.0.6",
