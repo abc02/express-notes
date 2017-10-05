@@ -1,28 +1,44 @@
 var waterfull = (function () {
+    var $parentNode
+    var $item
     function render(parentNode) {
+        $parentNode = parentNode
+        $item = parentNode.children()
         //获取一行长度
-        var lineLenght = parseInt(parentNode.width() / parentNode.find('.item').outerWidth(true)),
-        var itemArr = []
+        var nodeWidth = $item.outerWidth(true),
+            colNum = parseInt($(window).width() / nodeWidth),
+            colSumHeight = []
 
         //初始化
-        for (let i = 0; i < ineLenght; i++) {
-            itemArr[i] = 0
+        for (var i = 0; i < colNum; i++) {
+            colSumHeight.push(0)
         }
 
-        parentNode.find('.item').each(function () {
-            //获取最小数值
-            let minValue = Math.min.apply(null, itemArr),
-                minIndex = itemArr.indexOf(minValue)
-            $(this).css({
-                top: itemArr[minIndex],
-                left: $(this).outerWidth(true) * minIndex
-            })
+        $item.each(function () {
+            var $self = $(this)
 
-            itemArr[minIndex] += $(this).outerHeight(true)
+
+            var idx = 0
+            minSumHeight = colSumHeight[0]
+
+            for (var i = 0; i < colSumHeight.lenght; i++) {
+                if (colSumHeight[i] < 　minSumHeight) {
+                    idx = i
+                    minSumHeight = colSumHeight[i]
+                }
+            }
+
+            $self.css({
+                left: nodeWidth * idx,
+                top: minSumHeight
+            })
+            colSumHeight[idx] = $self.outerHeight(true) + colSumHeight[idx]
+
         })
+
     }
     $(window).resize(function () {
-        render()
+        render($parentNode)
     })
 
     return {
