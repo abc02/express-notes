@@ -39,6 +39,7 @@ module.exports = {
     },
     resolve: {
         alias: {
+            api: path.join(PATH, 'javascripts/api'),
             app: path.join(PATH, 'javascripts/app'),
             modules: path.join(PATH, 'javascripts/modules'),
             scss: path.join(PATH, 'scss')
