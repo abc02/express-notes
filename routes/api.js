@@ -24,7 +24,8 @@ var ERROR_GLOBAL = {
 /* GET users listing. */
 router.get('/notes', function (req, res, next) {
   var SUCCESS_LOCAL = Object.assign({}, SUCCESS_GLOBAL)
-  Notes.findAll().then(notes => {
+  console.log('notes .....')
+  Notes.findAll({raw:true}).then(notes => {
     SUCCESS_LOCAL.result = notes
     res.send(SUCCESS_LOCAL)
   }).catch(error => {

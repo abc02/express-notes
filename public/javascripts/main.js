@@ -11100,7 +11100,6 @@ var Toast = __webpack_require__(22)
 
 var NOTES_CONTAINER_DOM = $('#notes-container')
 
-
 NoteEnter.load()
 
 
@@ -11160,7 +11159,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "/*\r\nindex style 2017.10.4\r\n*/\nbody {\n  background: #ccc; }\n\n#header {\n  margin-bottom: 3rem;\n  padding: 1.25rem 1rem;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  background: #eee;\n  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.1); }\n\n#notes-container {\n  position: relative; }\n", ""]);
+exports.push([module.i, "/*\r\nindex style 2017.10.4\r\n*/\nbody {\n  background: #ccc; }\n\n#header {\n  margin-bottom: 3rem;\n  padding: 1.25rem 1rem;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  background: #eee;\n  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.1); }\n  #header .user-info {\n    display: flex; }\n    #header .user-info .avatar {\n      position: relative;\n      border-radius: 50%; }\n    #header .user-info img {\n      position: absolute;\n      width: 2rem;\n      height: 2rem;\n      top: 50%;\n      right: 0;\n      transform: translateY(-50%); }\n    #header .user-info li {\n      line-height: 1.3;\n      margin-right: .3rem; }\n    #header .user-info .line {\n      opacity: .3; }\n\n#notes-container {\n  position: relative; }\n", ""]);
 
 // exports
 
@@ -11178,8 +11177,8 @@ var NOTE_API = __webpack_require__(5)
 
 var NoteEnter = (function(){
     function notesLoad(notes){
+        console.log(notes)
         $.each(notes, function (index, note) {
-            console.log(note)
             if(note.deleted) return 
             Note.init({
                 id: note.id,

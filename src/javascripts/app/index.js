@@ -6,7 +6,6 @@ var Toast = require('modules/toast.js')
 
 var NOTES_CONTAINER_DOM = $('#notes-container')
 
-
 NoteEnter.load()
 
 

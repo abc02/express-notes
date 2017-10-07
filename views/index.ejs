@@ -11,14 +11,17 @@
   <div id="header">
     <a class="note-add" href="javascript:void(0)">添加</a>
 
-    <div class="user-info">
-       <% if (user) { %>
-        <a href="javascript:void(0)">Github登录</a>
+    <ul class="user-info">
+       <% if ( isLogin ) { %>
+        <li class="avatar"><img src=<%= user.avatar_url %> alt=""></li>
+        <li><span><%= user.username %></span></li>
+        <li><span class="line"> | </span></li>
+        <li><a href="/auth/logout" class="auth-logout">注&nbsp;销</a></li>
       <% } else { %>
-        <a href="javascript:void(0)"><%= user.username %></a>
-        <a href="javascript:void(0)">注&nbsp;销</a>
+        <li> <a href="/auth/github" class="auth-github">Github登录</a></li>
+       
       <% } %>
-    </div>
+      </ul>
   </div>
   <div id="notes-container">
    

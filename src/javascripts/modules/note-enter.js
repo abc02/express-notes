@@ -7,8 +7,8 @@ var NOTE_API = require('api/note-api.js')
 
 var NoteEnter = (function(){
     function notesLoad(notes){
+        console.log(notes)
         $.each(notes, function (index, note) {
-            console.log(note)
             if(note.deleted) return 
             Note.init({
                 id: note.id,
