@@ -45,8 +45,12 @@ var note = (function () {
                 + '</div>'
             this.$note = $(tpl)
             this.$note.find('.note-body').html(this.options.context)
-            if(!this.deleted) {
+            if (!this.deleted) {
                 this.options.$container.append(this.$note)
+            }
+            if (!this.id) {
+                this.$note.siblings().css('zIndex', 0);
+                this.$note.css({zIndex: 999, left: '10px', top: '100px'});
             }
             //if (!this.id) this.$note.css('buttom', '10px')
         },
@@ -72,44 +76,105 @@ var note = (function () {
                 $noteBody = this.$note.find('.note-body'),
                 $delete = this.$note.find('.delete')
 
-            $delete.on('click', function () {
-                self.delete()
-            })
+            // $delete.on('click', function () {
+            //     self.delete()
+            // })
 
-            $noteBody.on('focus', function () {
-                if ($noteBody.html() === 'input here') $noteBody.html('')
-                $noteBody.data('before', $noteBody.html())
-            }).on('blur paste', function () {
-                if ($noteBody.data('before') != $noteBody.html()) {
-                    $noteBody.data('before', $noteBody.html())
-                    self.setLayout()
-                    if (self.id) {
-                        self.edit($noteBody.html())
-                    } else {
-                        self.add($noteBody.html())
-                    }
-                }
-            })
+            // $noteBody.on('focus', function () {
+            //     if ($noteBody.html() === 'input here') {
+            //             $noteBody.html('')
+            //     } 
+            //     $noteBody.data('before', $noteBody.html())
+            // }).on('blur paste', function () {
+            //     if ($noteBody.data('before') != $noteBody.html()) {
+            //         $noteBody.data('before', $noteBody.html())
+            //         self.setLayout()
+            //         if (self.id) {
+            //             self.edit($noteBody.html())
+            //         } else {
+            //             self.add($noteBody.html())
+            //         }
+            //     }
+            // })
 
             $noteHead.on('mousedown', function (e) {
-                // bug is = -> -
+                console.log('mousedown')
                 var eventX = e.pageX - $note.offset().left,
                     eventY = e.pageY - $note.offset().top;
-                //console.log('mousedown', eventX, e.pageX, $note.offset().left)
-                $note.addClass('draggable').data('eventposition', { x: eventX, y: eventY });
-                console.log('mousedown', $note.data('eventposition'))
+                $note.addClass('draggable')
+                    .css('zIndex', 999)
+                    .siblings()
+                    .css('zIndex', 0)
+                $('body').on('mousemove', function (e) {
+                    console.log('mousemove')
+                    e.preventDefault()
+                    $('.draggable').length && $('.draggable').offset({
+                        top: e.pageY - eventY,
+                        left: e.pageX - eventX
+                    });
+                });
             }).on('mouseup', function () {
-                $note.removeClass('draggable').removeData('eventposition');
                 console.log('mouseup')
+                $note.removeClass('draggable')
+                $('body').off('mousemove')
             })
 
-            $('body').on('mousemove', function (e) {
-                //console.log($('.draggable').length)
-                $('.draggable').length && $('.draggable').offset({
-                    top: e.pageY - $('.draggable').data('eventposition').y,
-                    left: e.pageX - $('.draggable').data('eventposition').x
-                });
-            });
+            // var span = $noteHead.get(0);
+            // console.log(span)
+            // span.onmousedown = function (event) {
+            //     console.log('onmousedown')
+            //     var event = event || window.event;
+            //     var chaX = event.clientX - span.offsetLeft;
+            //     var chaY = event.clientY - span.offsetTop;
+            //     console.log(event, chaX, chaY)
+            //     document.onmousemove = function (event) {
+            //         console.log('onmousemove')
+            //         var event = event || window.event;
+            //         $note.get(0).style.left = event.clientX - chaX + 'px';
+            //         $note.get(0).style.top = event.clientY - chaY + 'px';
+            //     }
+            //     document.onmouseup = function () {
+            //         document.onmousemove = null;
+            //     }
+            // }
+             // note move ==> mouse down
+            // note fixed ==> mouse up
+            // $noteHead.on('mousedown', function (e) {
+            //     let evtX = e.pageX - $note.offset().left,
+            //         evtY = e.pageY - $note.offset().top;
+            //     $note.addClass('draggable').data('evtPos', {x: evtX, y: evtY});
+            // }).on('mouseup', function () {
+            //     $note.removeClass('draggable').removeData('evtPos');
+            // });
+
+            // // set position ==> mouse move
+            // $('body').on('mousemove', function (e) {
+            //     $('.draggable').length && $('.draggable').offset({
+            //         top: e.pageY - $('.draggable').data('evtPos').y,
+            //         left: e.pageX - $('.draggable').data('evtPos').x
+            //     });
+            // });
+
+            // //note的拖拽效果
+            // $noteHead.on('mousedown', function (e) {
+            //     var eventX = e.pageX - $note.offset().left,
+            //         eventY = e.pageY - $note.offset().top;
+            //     $note.addClass('draggable')
+            //         .css('zIndex', 999)
+            //         .siblings()
+            //         .css('zIndex', 0);
+            //     $('body').on('mousemove', function (e) {
+            //         e.preventDefault();
+            //         $('.draggable').length && $('.draggable').offset({
+            //             top: e.pageY - eventY,
+            //             left: e.pageX - eventX
+            //         });
+            //     });
+            // }).on('mouseup', function () {
+            //     $note.removeClass('draggable');
+            // });
+
+
 
             /*
             //设置笔记的移动
@@ -136,9 +201,9 @@ var note = (function () {
         edit: function (message) {
             console.log('edit   ..', message)
             DataBus.post(
-                NOTE_API.modify, 
-                { id:this.id, text: message },
-                this.successsFn.bind(this, '编辑成功'), 
+                NOTE_API.modify,
+                { id: this.id, text: message },
+                this.successsFn.bind(this, '编辑成功'),
                 this.errorFn.bind(this, '编辑失败，请重新尝试')
             )
         },
@@ -146,9 +211,9 @@ var note = (function () {
         add: function (message) {
             console.log('add   ..', message)
             DataBus.post(
-                NOTE_API.create, 
-                { text: message }, 
-                this.successsFn.bind(this, '新增成功'), 
+                NOTE_API.create,
+                { text: message },
+                this.successsFn.bind(this, '新增成功'),
                 this.errorFn.bind(this, '新增失败，请重新尝试')
             )
         },
@@ -157,18 +222,18 @@ var note = (function () {
             console.log('delete   ..')
             DataBus.post(
                 NOTE_API.deleted,
-                { id:this.id, deleted: true },
-                this.successsFn.bind(this, '删除成功'), 
+                { id: this.id, deleted: true },
+                this.successsFn.bind(this, '删除成功'),
                 this.errorFn.bind(this, '删除失败，请重新尝试')
             )
         },
 
         successsFn(message, res) {
-            if(!this.id){
+            if (!this.id) {
                 this.id = res.note.id
                 this.options.id = res.note.id
             }
-            if(res.note.deleted){
+            if (res.note.deleted) {
                 this.$note.remove()
             }
             Event.trigger('toast', message)
@@ -180,7 +245,7 @@ var note = (function () {
     }
 
     function init(options) {
-        return new Note(options)
+        new Note(options)
     }
 
     return {

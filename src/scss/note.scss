@@ -5,6 +5,7 @@
     margin: 20px 10px;
     transition: all 0.5s;
     .note-head {
+        cursor: move;
         height: 30px;
         background-color: #ea9b35;
         .delete {
@@ -57,5 +58,5 @@
 .draggable {
     opacity: 0.8;
     cursor: move;
-    // transition: none;
+    transition: none;
 }
