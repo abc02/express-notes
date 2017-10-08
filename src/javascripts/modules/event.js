@@ -7,10 +7,10 @@ var eventCenter = (function () {
             pools[topic] = [fn]
         }
     }
-    var trigger = function (topic,message) {
+    var trigger = function (topic,data) {
         if (pools[topic]) {
             pools[topic].forEach((fn) => {
-                fn(message)
+                fn(data)
             })
         }
     }
