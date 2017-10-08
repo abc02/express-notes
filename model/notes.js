@@ -19,6 +19,8 @@ var sequelize = new Sequelize(undefined, undefined, undefined, {
       defaultValue:false
     }
   });
+
+  Notes.sync()
   //force: true will drop the table if it already exists
 //  Notes.sync({force:true})
   /*
