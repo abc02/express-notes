@@ -1,7 +1,7 @@
 # express-notes
 在线便签网站
 
-线上预览：http://note.abc02.info
+线上预览：http://notes.abc02.info
 
 ## 使用方法
 
