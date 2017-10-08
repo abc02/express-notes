@@ -76,26 +76,26 @@ var note = (function () {
                 $noteBody = this.$note.find('.note-body'),
                 $delete = this.$note.find('.delete')
 
-            // $delete.on('click', function () {
-            //     self.delete()
-            // })
+            $delete.on('click', function () {
+                self.delete()
+            })
 
-            // $noteBody.on('focus', function () {
-            //     if ($noteBody.html() === 'input here') {
-            //             $noteBody.html('')
-            //     } 
-            //     $noteBody.data('before', $noteBody.html())
-            // }).on('blur paste', function () {
-            //     if ($noteBody.data('before') != $noteBody.html()) {
-            //         $noteBody.data('before', $noteBody.html())
-            //         self.setLayout()
-            //         if (self.id) {
-            //             self.edit($noteBody.html())
-            //         } else {
-            //             self.add($noteBody.html())
-            //         }
-            //     }
-            // })
+            $noteBody.on('focus', function () {
+                if ($noteBody.html() === 'input here') {
+                        $noteBody.html('')
+                } 
+                $noteBody.data('before', $noteBody.html())
+            }).on('blur paste', function () {
+                if ($noteBody.data('before') != $noteBody.html()) {
+                    $noteBody.data('before', $noteBody.html())
+                    self.setLayout()
+                    if (self.id) {
+                        self.edit($noteBody.html())
+                    } else {
+                        self.add($noteBody.html())
+                    }
+                }
+            })
 
             $noteHead.on('mousedown', function (e) {
                 console.log('mousedown')
@@ -200,45 +200,79 @@ var note = (function () {
 
         edit: function (message) {
             console.log('edit   ..', message)
+            var successsFn = function(res){
+                if(res.status === 0){
+
+                    Event.trigger('toast', '编辑成功')
+                    Event.trigger('waterfull')
+                }else{
+                    Event.trigger('toast', res.error)
+                }
+            }
+            var errorFn = function(res){
+
+            }
             DataBus.post(
                 NOTE_API.modify,
                 { id: this.id, text: message },
-                this.successsFn.bind(this, '编辑成功'),
+                successsFn,
                 this.errorFn.bind(this, '编辑失败，请重新尝试')
             )
         },
 
         add: function (message) {
             console.log('add   ..', message)
+            var successsFn = function(res){
+                if(res.status === 0){
+                    Event.trigger('toast', '新增成功')
+                    Event.trigger('waterfull')
+                }else{
+                    Event.trigger('toast', res.error)
+                }
+            }
+            var errorFn = function(res){
+                
+            }
             DataBus.post(
                 NOTE_API.create,
                 { text: message },
-                this.successsFn.bind(this, '新增成功'),
+                successsFn,
                 this.errorFn.bind(this, '新增失败，请重新尝试')
             )
         },
 
         delete: function (e) {
             console.log('delete   ..')
+            var successsFn = function(res){
+                if(res.status === 0){
+                    this.$note.remove()
+                    Event.trigger('toast', '删除成功')
+                    Event.trigger('waterfull')
+                }else{
+                    Event.trigger('toast', res.error)
+                }
+            }
+            var errorFn = function(res){
+                
+            }
             DataBus.post(
                 NOTE_API.deleted,
-                { id: this.id, deleted: true },
-                this.successsFn.bind(this, '删除成功'),
+                { id: this.id },
+                successsFn,
                 this.errorFn.bind(this, '删除失败，请重新尝试')
             )
         },
 
-        successsFn(message, res) {
-            if (!this.id) {
-                this.id = res.note.id
-                this.options.id = res.note.id
-            }
-            if (res.note.deleted) {
-                this.$note.remove()
-            }
-            Event.trigger('toast', message)
-            Event.trigger('waterfull')
-        },
+        // successsFn(message, res) {
+        //     if (!this.id) {
+        //         this.id = res.note.id
+        //         this.options.id = res.note.id
+        //     }
+        //     if (res.note.deleted) {
+        //         this.$note.remove()
+        //     }
+           
+        // },
         errorFn(message, res) {
             Event.trigger('toast', message)
         }
