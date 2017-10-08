@@ -209,7 +209,7 @@ var note = (function () {
                     Event.trigger('toast', res.error)
                 }
             }
-            var errorFn = function(res){
+            var errorFn = (res) =>{
 
             }
             DataBus.post(
@@ -222,15 +222,17 @@ var note = (function () {
 
         add: function (message) {
             console.log('add   ..', message)
-            var successsFn = function(res){
+            var successsFn = (res) =>{
                 if(res.status === 0){
+                    this.id = res.note.id
                     Event.trigger('toast', '新增成功')
                     Event.trigger('waterfull')
                 }else{
+                    this.$note.remove()
                     Event.trigger('toast', res.error)
                 }
             }
-            var errorFn = function(res){
+            var errorFn = (res) => {
                 
             }
             DataBus.post(
@@ -243,7 +245,7 @@ var note = (function () {
 
         delete: function (e) {
             console.log('delete   ..')
-            var successsFn = function(res){
+            var successsFn = (res) => {
                 if(res.status === 0){
                     this.$note.remove()
                     Event.trigger('toast', '删除成功')
@@ -252,7 +254,7 @@ var note = (function () {
                     Event.trigger('toast', res.error)
                 }
             }
-            var errorFn = function(res){
+            var errorFn = (res) => {
                 
             }
             DataBus.post(

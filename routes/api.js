@@ -60,14 +60,15 @@ router.post('/note/create', function (req, res) {
   var note = req.body.text
   var uid  = req.session.user.id
   console.log('note/create .....')
-  console.log(req)
+  //console.log(req)
   Notes.create({uid:uid,text:note}).then(note => {
     //SUCCESS_LOCAL.note = curNote.dataValues
     console.log(note.get({
       plain:true
     }))
     res.send({
-      status:0
+      status:0,
+      note: note.get({ plain:true })
     })
   }).catch(error => {
     res.send({

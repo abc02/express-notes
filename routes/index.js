@@ -7,7 +7,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   var isLoginData = {}
   console.log('/index ....')
-  console.log(req)
+  //console.log(req)
   isLoginData.isLogin = false
   if(req.session.user){
     isLoginData = {
