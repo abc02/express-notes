@@ -28,7 +28,7 @@ var note = (function () {
 
         defaultOptions: {
             id: '',
-            $container: $('#notes-container').length > 0 ? $('#notes-container') : $('body'),
+            $container: $('#notes-cover').length > 0 ? $('#notes-cover') : $('body'),
             context: 'input here',
             deleted: false
         },

@@ -3,7 +3,6 @@ const fs = require('fs');
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const EjsWebpacksPlugin = require('ejs-webpack-plugin');
 
 const PATH = path.join(__dirname)
 const env = process.env.NODE_ENV || 'development';
@@ -24,7 +23,7 @@ module.exports = {
         path: path.join(__dirname, '../public'),
         filename: '[name]_[chunkhash:5].js',
         // chunkFilename: "./[name]/[id].chunk.js",
-        publicPath: '/'
+        publicPath: ''
     },
 
 
@@ -35,39 +34,21 @@ module.exports = {
             }
         }),
         new webpack.ProvidePlugin({
-            $: 'jquery'
+            $: 'jquery',
+            jQuery: 'jquery',
+            bootstrap: 'bootstrap'
         }),
-        new ExtractTextPlugin('stylesheets/[name]-style_[chunkhash:5].css'),
+        new ExtractTextPlugin('/stylesheets/[name]_[chunkhash:5].css'),
         new webpack.optimize.CommonsChunkPlugin({
             minChunks: Infinity,
             name: 'vendor',
-            filename: 'javascripts/vendor_[chunkhash:5].js',
+            filename: '/javascripts/[name]_[chunkhash:5].js',
             minChunks: 2
         }),
-        // new HtmlWebpackPlugin({
-        //     hash: true,
-        //     template: 'ejs-render!./dev/index.ejs',
-        //     inject: 'body'
-        // }),
-        // new HtmlWebpackPlugin({
-        //     template: '!!handlebars!' + path.join(__dirname, '../views/entry/test.ejs'),
-        //     title:'ejs',
-        //     inject:true
-        //   }),
           new HtmlWebpackPlugin({
             template: '!!raw-loader!' + path.join(__dirname, '../views/entry/index.ejs'),
             filename: '../views/index.ejs'  // this line decide the extension of output file.
           })
-        // new EjsWebpacksPlugin({
-        //     context: __dirname,
-        //     entry: {
-        //         '../views/entry/test.ejs': {
-        //             'js': ['index', 'vendor'],
-        //             'css': ['index-style'],
-        //             'output': './views' //默认同Key
-        //         },
-        //     }
-        // })
     ],
 
 
@@ -81,10 +62,6 @@ module.exports = {
                 // include: path.join(__dirname, '../public'),
                 exclude: /node_modules/
             },
-            // {
-            //     test: /\.(tpl|ejs)$/,
-            //     loader: 'ejs',
-            // },
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
@@ -137,7 +114,8 @@ module.exports = {
             api: path.join(PATH, '../src/javascripts/api'),
             app: path.join(PATH, '../src/javascripts/app'),
             modules: path.join(PATH, '../src/javascripts/modules'),
-            scss: path.join(PATH, '../src/stylesheets')
+            scss: path.join(PATH, '../src/stylesheets'),
+            node_modules:path.join(PATH, '../node_modules/')
         }
     }
 

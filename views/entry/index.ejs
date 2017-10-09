@@ -1,31 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>我的便签</title>
 </head>
+
 <body>
-  
-  <div id="header">
-    <a class="note-add" href="javascript:void(0)">添加</a>
 
-    <ul class="user-info">
-       <% if ( isLogin ) { %>
-        <li class="avatar"><img src=<%= user.avatar_url %> alt=""></li>
-        <li><span><%= user.username %></span></li>
-        <li><span class="line"> | </span></li>
-        <li><a href="/auth/logout" class="auth-logout">注&nbsp;销</a></li>
-      <% } else { %>
-        <li> <a href="/auth/github" class="auth-github">Github登录</a></li>
-       
-      <% } %>
-      </ul>
-  </div>
-  <div id="notes-container">
-   
-  </div>
+  <div class="site-wrapper">
 
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Node.js 在线便利签</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <% if ( isLogin ) { %>
+                    <li class="add-note"><a href="javascript:void(0)">新建便签</a></li>
+                    <li><a href="javascript:void(0)"><%= user.username %></a></li>
+                    <li><a href="/auth/logout">注&nbsp;销</a></li>
+                    <% } else { %>
+                      <li><a href="/auth/github">GitHub 登录</a></li>
+                      <% } %>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        
+          <div class="inner cover" id="notes-cover">
+            <!-- <h1 class="cover-heading">Cover your page.</h1>
+                <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+                <p class="lead">
+                  <a href="#" class="btn btn-lg btn-default">Learn more</a>
+                </p> -->
+          </div>
+
+            <div class="mastfoot">
+              <div class="inner">
+                <p>Theme by <a href="https://twitter.com/mdo">@mdo</a>. Code by <a href="//github.com/abc02/express-notes">abc02.</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
 </body>
+
 </html>

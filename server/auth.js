@@ -12,6 +12,7 @@ var GITHUB_CLIENT_ID = '503084ad3a85a84d51f6'
 var GITHUB_CLIENT_SECRET = '4c68e1f15238a2cfe174f9e77f82a263d9b69852'
 var CALLBACK_URL = "http://notes.abc02.info/auth/github/callback"
 
+
 passport.serializeUser(function (user, done) {
     console.log('serializeUser   ...')
     console.log(user)

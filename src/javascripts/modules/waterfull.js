@@ -1,6 +1,7 @@
 var waterfull = (function () {
     var $parentNode
     var $item
+    var maxHeight
     function render(parentNode) {
         if (parentNode === 'undefined') return
         $parentNode = parentNode
@@ -38,9 +39,10 @@ var waterfull = (function () {
                 top: minSumHeight
             })
             colSumHeight[idx] += $self.outerHeight(true)
+            maxHeight = colSumHeight[idx]
 
         })
-
+        $('#notes-cover').height(maxHeight)
     }
 
     function render2(parentNode) {
@@ -69,6 +71,7 @@ var waterfull = (function () {
         })
     }
     $(window).resize(function () {
+        $('#notes-cover').height(maxHeight)
         render($parentNode)
     })
 
