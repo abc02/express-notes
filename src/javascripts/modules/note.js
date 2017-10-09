@@ -1,5 +1,8 @@
 require('scss/note.scss')
 
+
+
+
 var Event = require('modules/event.js')
 var DataBus = require('api/databus.js')
 var NOTE_API = require('api/note-api.js')

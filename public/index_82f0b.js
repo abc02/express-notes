@@ -1,511 +1,5 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
-/******/ })
-/************************************************************************/
-/******/ ([
+webpackJsonp([0],[
 /* 0 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-var stylesInDom = {};
-
-var	memoize = function (fn) {
-	var memo;
-
-	return function () {
-		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-		return memo;
-	};
-};
-
-var isOldIE = memoize(function () {
-	// Test for IE <= 9 as proposed by Browserhacks
-	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-	// Tests for existence of standard globals is to allow style-loader
-	// to operate correctly into non-standard environments
-	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	return window && document && document.all && !window.atob;
-});
-
-var getElement = (function (fn) {
-	var memo = {};
-
-	return function(selector) {
-		if (typeof memo[selector] === "undefined") {
-			memo[selector] = fn.call(this, selector);
-		}
-
-		return memo[selector]
-	};
-})(function (target) {
-	return document.querySelector(target)
-});
-
-var singleton = null;
-var	singletonCounter = 0;
-var	stylesInsertedAtTop = [];
-
-var	fixUrls = __webpack_require__(9);
-
-module.exports = function(list, options) {
-	if (typeof DEBUG !== "undefined" && DEBUG) {
-		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (!options.singleton) options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (!options.insertInto) options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (!options.insertAt) options.insertAt = "bottom";
-
-	var styles = listToStyles(list, options);
-
-	addStylesToDom(styles, options);
-
-	return function update (newList) {
-		var mayRemove = [];
-
-		for (var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-
-		if(newList) {
-			var newStyles = listToStyles(newList, options);
-			addStylesToDom(newStyles, options);
-		}
-
-		for (var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-
-			if(domStyle.refs === 0) {
-				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
-
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom (styles, options) {
-	for (var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-
-		if(domStyle) {
-			domStyle.refs++;
-
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles (list, options) {
-	var styles = [];
-	var newStyles = {};
-
-	for (var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = options.base ? item[0] + options.base : item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-
-		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
-		else newStyles[id].parts.push(part);
-	}
-
-	return styles;
-}
-
-function insertStyleElement (options, style) {
-	var target = getElement(options.insertInto)
-
-	if (!target) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-
-	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
-
-	if (options.insertAt === "top") {
-		if (!lastStyleElementInsertedAtTop) {
-			target.insertBefore(style, target.firstChild);
-		} else if (lastStyleElementInsertedAtTop.nextSibling) {
-			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			target.appendChild(style);
-		}
-		stylesInsertedAtTop.push(style);
-	} else if (options.insertAt === "bottom") {
-		target.appendChild(style);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement (style) {
-	if (style.parentNode === null) return false;
-	style.parentNode.removeChild(style);
-
-	var idx = stylesInsertedAtTop.indexOf(style);
-	if(idx >= 0) {
-		stylesInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement (options) {
-	var style = document.createElement("style");
-
-	options.attrs.type = "text/css";
-
-	addAttrs(style, options.attrs);
-	insertStyleElement(options, style);
-
-	return style;
-}
-
-function createLinkElement (options) {
-	var link = document.createElement("link");
-
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	addAttrs(link, options.attrs);
-	insertStyleElement(options, link);
-
-	return link;
-}
-
-function addAttrs (el, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		el.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle (obj, options) {
-	var style, update, remove, result;
-
-	// If a transform function was defined, run it on the css
-	if (options.transform && obj.css) {
-	    result = options.transform(obj.css);
-
-	    if (result) {
-	    	// If transform returns a value, use that instead of the original css.
-	    	// This allows running runtime transformations on the css.
-	    	obj.css = result;
-	    } else {
-	    	// If the transform function returns a falsy value, don't add this css.
-	    	// This allows conditional loading of css
-	    	return function() {
-	    		// noop
-	    	};
-	    }
-	}
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-
-		style = singleton || (singleton = createStyleElement(options));
-
-		update = applyToSingletonTag.bind(null, style, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
-
-	} else if (
-		obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function"
-	) {
-		style = createLinkElement(options);
-		update = updateLink.bind(null, style, options);
-		remove = function () {
-			removeStyleElement(style);
-
-			if(style.href) URL.revokeObjectURL(style.href);
-		};
-	} else {
-		style = createStyleElement(options);
-		update = applyToTag.bind(null, style);
-		remove = function () {
-			removeStyleElement(style);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle (newObj) {
-		if (newObj) {
-			if (
-				newObj.css === obj.css &&
-				newObj.media === obj.media &&
-				newObj.sourceMap === obj.sourceMap
-			) {
-				return;
-			}
-
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag (style, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = style.childNodes;
-
-		if (childNodes[index]) style.removeChild(childNodes[index]);
-
-		if (childNodes.length) {
-			style.insertBefore(cssNode, childNodes[index]);
-		} else {
-			style.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		style.setAttribute("media", media)
-	}
-
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
-
-		style.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink (link, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/*
-		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls) {
-		css = fixUrls(css);
-	}
-
-	if (sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = link.href;
-
-	link.href = URL.createObjectURL(blob);
-
-	if(oldSrc) URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10765,64 +10259,63 @@ return jQuery;
 
 
 /***/ }),
-/* 3 */
+/* 1 */
 /***/ (function(module, exports) {
 
-var eventCenter = (function () {
-    var pools = {}
+var eventCenter = function () {
+    var pools = {};
     var on = function (topic, fn) {
         if (pools[topic]) {
-            pools[topic].push(fn)
+            pools[topic].push(fn);
         } else {
-            pools[topic] = [fn]
+            pools[topic] = [fn];
         }
-    }
-    var trigger = function (topic,data) {
+    };
+    var trigger = function (topic, data) {
         if (pools[topic]) {
-            pools[topic].forEach((fn) => {
-                fn(data)
-            })
+            pools[topic].forEach(fn => {
+                fn(data);
+            });
         }
-    }
+    };
     return {
         on: on,
         trigger: trigger
-    }
-})()
+    };
+}();
 
-module.exports = eventCenter
+module.exports = eventCenter;
 
 /***/ }),
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {var DataBus = (function () {
+/* WEBPACK VAR INJECTION */(function($) {var DataBus = function () {
     function get(url, data, successFn, errorFn) {
-        $.get(url).done(function(res){
-            successFn(res) && successFn.call(null, res)
-        }).fail(function(error){
-            errorFn(error) && errorFn.call(null,error)
-        })
+        $.get(url).done(function (res) {
+            successFn(res) && successFn.call(null, res);
+        }).fail(function (error) {
+            errorFn(error) && errorFn.call(null, error);
+        });
     }
     function post(url, data, successFn, errorFn) {
-        $.post(url, data).done(function(res){
-            successFn(res) && successFn.call(null, res)
-        }).fail(function(error){
-            errorFn(error) && errorFn.call(null,error)
-        })
+        $.post(url, data).done(function (res) {
+            successFn(res) && successFn.call(null, res);
+        }).fail(function (error) {
+            errorFn(error) && errorFn.call(null, error);
+        });
     }
     return {
         get: get,
         post, post
-    }
-})()
+    };
+}();
 
-
-module.exports = DataBus
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+module.exports = DataBus;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /*
@@ -10835,414 +10328,146 @@ response  {status:0, message:'ok', result:[{note}, {note}...] } 成功
 4.删除一个note   POST   /api/note/deleted   {id: noteid}
 */
 
-var NOTE_API = (function () {
+var NOTE_API = function () {
     return {
-        notes:'api/notes',
+        notes: 'api/notes',
         create: 'api/note/create',
         modify: 'api/note/modify',
         deleted: 'api/note/deleted'
-    }
-})()
+    };
+}();
 
-module.exports = NOTE_API
+module.exports = NOTE_API;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(5);
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(6);
+__webpack_require__(7);
+__webpack_require__(8);
+
+__webpack_require__(9);
+
+var NoteEnter = __webpack_require__(10);
+var Event = __webpack_require__(1);
+var Waterfull = __webpack_require__(13);
+var Toast = __webpack_require__(14);
+
+var NOTES_CONTAINER_DOM = $('#notes-container');
+
+NoteEnter.load();
+
+Event.on('waterfull', function (message) {
+    Waterfull.init(NOTES_CONTAINER_DOM);
+});
+Event.on('toast', function (message) {
+    Toast.init(message);
+});
+
+$('.note-add').on('click', function () {
+    NoteEnter.add();
+    Event.trigger('waterfull');
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-__webpack_require__(7)
-__webpack_require__(10)
-__webpack_require__(12)
-
-
-__webpack_require__(14)
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(8);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../css-loader/index.js!./normalize.css", function() {
-			var newContent = require("!!../css-loader/index.js!./normalize.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers (opinionated).\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Add the correct display in IE 9-.\n */\n\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\n\nfigcaption,\nfigure,\nmain { /* 1 */\n  display: block;\n}\n\n/**\n * Add the correct margin in IE 8.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\n\na {\n  background-color: transparent; /* 1 */\n  -webkit-text-decoration-skip: objects; /* 2 */\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\n\nb,\nstrong {\n  font-weight: inherit;\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font style in Android 4.3-.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Add the correct background and color in IE 9-.\n */\n\nmark {\n  background-color: #ff0;\n  color: #000;\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n */\n\naudio,\nvideo {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in iOS 4-7.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\n\nimg {\n  border-style: none;\n}\n\n/**\n * Hide the overflow in IE.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\nhtml [type=\"button\"], /* 1 */\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\n\ndetails, /* 1 */\nmenu {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Scripting\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n */\n\ncanvas {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in IE.\n */\n\ntemplate {\n  display: none;\n}\n\n/* Hidden\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10-.\n */\n\n[hidden] {\n  display: none;\n}\n", ""]);
-
-// exports
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports) {
 
-
-/**
- * When source maps are enabled, `style-loader` uses a link element with a data-uri to
- * embed the css on the page. This breaks all relative urls because now they are relative to a
- * bundle instead of the current page.
- *
- * One solution is to only use full urls, but that may be impossible.
- *
- * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
- *
- * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
- *
- */
-
-module.exports = function (css) {
-  // get current location
-  var location = typeof window !== "undefined" && window.location;
-
-  if (!location) {
-    throw new Error("fixUrls requires window.location");
-  }
-
-	// blank or null?
-	if (!css || typeof css !== "string") {
-	  return css;
-  }
-
-  var baseUrl = location.protocol + "//" + location.host;
-  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
-
-	// convert each url(...)
-	/*
-	This regular expression is just a way to recursively match brackets within
-	a string.
-
-	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
-	   (  = Start a capturing group
-	     (?:  = Start a non-capturing group
-	         [^)(]  = Match anything that isn't a parentheses
-	         |  = OR
-	         \(  = Match a start parentheses
-	             (?:  = Start another non-capturing groups
-	                 [^)(]+  = Match anything that isn't a parentheses
-	                 |  = OR
-	                 \(  = Match a start parentheses
-	                     [^)(]*  = Match anything that isn't a parentheses
-	                 \)  = Match a end parentheses
-	             )  = End Group
-              *\) = Match anything and then a close parens
-          )  = Close non-capturing group
-          *  = Match anything
-       )  = Close capturing group
-	 \)  = Match a close parens
-
-	 /gi  = Get all matches, not the first.  Be case insensitive.
-	 */
-	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
-		// strip quotes (if they exist)
-		var unquotedOrigUrl = origUrl
-			.trim()
-			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
-			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
-
-		// already a full url? no change
-		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
-		  return fullMatch;
-		}
-
-		// convert the url to a full url
-		var newUrl;
-
-		if (unquotedOrigUrl.indexOf("//") === 0) {
-		  	//TODO: should we add protocol?
-			newUrl = unquotedOrigUrl;
-		} else if (unquotedOrigUrl.indexOf("/") === 0) {
-			// path should be relative to the base url
-			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
-		} else {
-			// path should be relative to current directory
-			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
-		}
-
-		// send back the fixed url(...)
-		return "url(" + JSON.stringify(newUrl) + ")";
-	});
-
-	// send back the fixed css
-	return fixedCss;
-};
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+/* WEBPACK VAR INJECTION */(function($) {var Note = __webpack_require__(11);
+var Event = __webpack_require__(1);
+var DataBus = __webpack_require__(2);
+var NOTE_API = __webpack_require__(3);
 
-// load the styles
-var content = __webpack_require__(11);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
+var NoteEnter = function () {
+    function notesLoad(notes) {
+        console.log(notes);
+        $.each(notes, function (index, note) {
+            if (note.deleted) return;
+            Note.init({
+                id: note.id,
+                context: note.text
+            });
+        });
+        Event.trigger('waterfull');
+    }
 
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./fonts.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./fonts.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+    function load() {
+        DataBus.get(NOTE_API.notes, {}, function (res) {
+            notesLoad(res.result);
+            Event.trigger('toast', '载入完毕');
+        }, function (error) {
+            Event.trigger('toast', error.statusText);
+        });
+    }
+
+    function add() {
+        Note.init();
+    }
+
+    return {
+        load: load,
+        add: add
+    };
+}();
+
+module.exports = NoteEnter;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
+/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(12);
 
+var Event = __webpack_require__(1);
+var DataBus = __webpack_require__(2);
+var NOTE_API = __webpack_require__(3);
 
-// module
-exports.push([module.i, "/*\r\nfonts style 2017.10.4\r\n*/\nhtml {\n  font-family: -apple-system, \"Helvetica Neue\", Helvetica, \"Nimbus Sans L\", Arial, \"Liberation Sans\", \"PingFang SC\", \"Hiragino Sans GB\", \"Source Han Sans CN\", \"Source Han Sans SC\", \"Microsoft YaHei\", \"Wenquanyi Micro Hei\", \"WenQuanYi Zen Hei\", \"ST Heiti\", SimHei, \"WenQuanYi Zen Hei Sharp\", sans-serif; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(13);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./reset.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./reset.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "/*\r\nreset style 2017.10.4\r\n*/\nhtml, body, div, p, h1, h2, h3, h4, h5, h6, ul, ol, li {\n  padding: 0;\n  margin: 0; }\n\n* {\n  box-sizing: border-box; }\n  *:after {\n    box-sizing: border-box; }\n  *:before {\n    box-sizing: border-box; }\n\na {\n  color: inherit;\n  text-decoration: none; }\n  a:hover, a:active {\n    text-decoration: underline; }\n\nli {\n  list-style: none; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(15)
-var NoteEnter = __webpack_require__(17)
-var Event = __webpack_require__(3)
-var Waterfull = __webpack_require__(21)
-var Toast = __webpack_require__(22)
-
-var NOTES_CONTAINER_DOM = $('#notes-container')
-
-NoteEnter.load()
-
-
-Event.on('waterfull',function(message){
-    Waterfull.init(NOTES_CONTAINER_DOM)
-})
-Event.on('toast',function(message){
-    Toast.init(message)
-})
-
-$('.note-add').on('click',function(){
-    NoteEnter.add()
-    Event.trigger('waterfull')
-})
-
-
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(16);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./index.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./index.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "/*\r\nindex style 2017.10.4\r\n*/\nhtml, body {\n  height: 100%;\n  height: 100vh; }\n\nbody {\n  background: #ccc; }\n\n#header {\n  margin-bottom: 3rem;\n  padding: 1.25rem 1rem;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  background: #eee;\n  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.1); }\n  #header .user-info {\n    display: flex; }\n    #header .user-info .avatar {\n      position: relative;\n      border-radius: 50%; }\n    #header .user-info img {\n      position: absolute;\n      width: 20px;\n      height: 20px;\n      top: 50%;\n      right: 0;\n      transform: translateY(-50%); }\n    #header .user-info li {\n      line-height: 1.3;\n      margin-right: .3rem; }\n    #header .user-info .line {\n      opacity: .3; }\n\n#notes-container {\n  position: relative; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function($) {var Note = __webpack_require__(18)
-var Event = __webpack_require__(3)
-var DataBus = __webpack_require__(4)
-var NOTE_API = __webpack_require__(5)
-
-
-
-var NoteEnter = (function(){
-    function notesLoad(notes){
-        console.log(notes)
-        $.each(notes, function (index, note) {
-            if(note.deleted) return 
-            Note.init({
-                id: note.id,
-                context: note.text,
-            })
-        })
-        Event.trigger('waterfull')
-    }
-    
-    function load() {
-        DataBus.get(
-            NOTE_API.notes,
-            {},
-            function (res) {
-                notesLoad(res.result)
-                Event.trigger('toast', '载入完毕')
-            },
-            function (error) {
-                Event.trigger('toast', error.statusText)
-            }
-        )
-    }
-
-    function add (){
-        Note.init()
-    }
-
-    return {
-        load: load,
-        add: add,
-    }
-})()
-
-module.exports = NoteEnter 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(19)
-
-var Event = __webpack_require__(3)
-var DataBus = __webpack_require__(4)
-var NOTE_API = __webpack_require__(5)
-
-
-
-var note = (function () {
-
+var note = function () {
 
     function Note(options) {
-        this.init(options)
-        this.createNote()
-        this.setStyle()
-        this.bindEvent()
+        this.init(options);
+        this.createNote();
+        this.setStyle();
+        this.bindEvent();
     }
 
     Note.prototype = {
 
-        colors: [
-            ['#ea9b35', '#efb04e'],
-            ['#dd596b', '#e672a2']
-        ],
+        colors: [['#ea9b35', '#efb04e'], ['#dd596b', '#e672a2']],
 
         defaultOptions: {
             id: '',
@@ -11252,26 +10477,23 @@ var note = (function () {
         },
 
         init: function (options) {
-            this.options = $.extend({}, this.defaultOptions, options || {})
+            this.options = $.extend({}, this.defaultOptions, options || {});
             if (this.options.id) {
-                this.id = this.options.id
+                this.id = this.options.id;
             }
-            this.deleted = this.options.deleted
+            this.deleted = this.options.deleted;
         },
 
         createNote: function () {
-            var tpl = '<div class="note-item">'
-                + '<div class="note-head"><span class="delete">&times;</span></div>'
-                + '<div class="note-body" contenteditable="true"></div>'
-                + '</div>'
-            this.$note = $(tpl)
-            this.$note.find('.note-body').html(this.options.context)
+            var tpl = '<div class="note-item">' + '<div class="note-head"><span class="delete">&times;</span></div>' + '<div class="note-body" contenteditable="true"></div>' + '</div>';
+            this.$note = $(tpl);
+            this.$note.find('.note-body').html(this.options.context);
             if (!this.deleted) {
-                this.options.$container.append(this.$note)
+                this.options.$container.append(this.$note);
             }
             if (!this.id) {
                 this.$note.siblings().css('zIndex', 0);
-                this.$note.css({zIndex: 999, left: '10px', top: '100px'});
+                this.$note.css({ zIndex: 999, left: '10px', top: '100px' });
             }
             //if (!this.id) this.$note.css('buttom', '10px')
         },
@@ -11283,11 +10505,11 @@ var note = (function () {
 
         setLayout() {
             if (this.timer) {
-                clearTimeout(this.timer)
+                clearTimeout(this.timer);
             }
             this.timer = setTimeout(function () {
-                Event.trigger('waterfull')
-            }, 100)
+                Event.trigger('waterfull');
+            }, 100);
         },
 
         bindEvent: function () {
@@ -11295,50 +10517,47 @@ var note = (function () {
                 $note = this.$note,
                 $noteHead = this.$note.find('.note-head'),
                 $noteBody = this.$note.find('.note-body'),
-                $delete = this.$note.find('.delete')
+                $delete = this.$note.find('.delete');
 
             $delete.on('click', function () {
-                self.delete()
-            })
+                self.delete();
+            });
 
             $noteBody.on('focus', function () {
                 if ($noteBody.html() === 'input here') {
-                        $noteBody.html('')
-                } 
-                $noteBody.data('before', $noteBody.html())
+                    $noteBody.html('');
+                }
+                $noteBody.data('before', $noteBody.html());
             }).on('blur paste', function () {
                 if ($noteBody.data('before') != $noteBody.html()) {
-                    $noteBody.data('before', $noteBody.html())
-                    self.setLayout()
+                    $noteBody.data('before', $noteBody.html());
+                    self.setLayout();
                     if (self.id) {
-                        self.edit($noteBody.html())
+                        self.edit($noteBody.html());
                     } else {
-                        self.add($noteBody.html())
+                        self.add($noteBody.html());
                     }
                 }
-            })
+            });
 
             $noteHead.on('mousedown', function (e) {
-                console.log('mousedown')
+                console.log('mousedown');
                 var eventX = e.pageX - $note.offset().left,
                     eventY = e.pageY - $note.offset().top;
-                $note.addClass('draggable')
-                    .css('zIndex', 999)
-                    .siblings()
-                    .css('zIndex', 0)
+                $note.addClass('draggable').css('zIndex', 999).siblings().css('zIndex', 0);
                 $('body').on('mousemove', function (e) {
-                    console.log('mousemove')
-                    e.preventDefault()
+                    console.log('mousemove');
+                    e.preventDefault();
                     $('.draggable').length && $('.draggable').offset({
                         top: e.pageY - eventY,
                         left: e.pageX - eventX
                     });
                 });
             }).on('mouseup', function () {
-                console.log('mouseup')
-                $note.removeClass('draggable')
-                $('body').off('mousemove')
-            })
+                console.log('mouseup');
+                $note.removeClass('draggable');
+                $('body').off('mousemove');
+            });
 
             // var span = $noteHead.get(0);
             // console.log(span)
@@ -11358,7 +10577,7 @@ var note = (function () {
             //         document.onmousemove = null;
             //     }
             // }
-             // note move ==> mouse down
+            // note move ==> mouse down
             // note fixed ==> mouse up
             // $noteHead.on('mousedown', function (e) {
             //     let evtX = e.pageX - $note.offset().left,
@@ -11396,7 +10615,6 @@ var note = (function () {
             // });
 
 
-
             /*
             //设置笔记的移动
             $noteHead.on('mousedown', function (e) {
@@ -11408,82 +10626,59 @@ var note = (function () {
                 $note.removeClass('draggable').removeData('pos');
                 console.log('mouseup')
             });
-    
-            $('body').on('mousemove', function (e) {
+                  $('body').on('mousemove', function (e) {
                 $('.draggable').length && $('.draggable').offset({
                     top: e.pageY - $('.draggable').data('evtPos').y,    // 当用户鼠标移动时，根据鼠标的位置和前面保存的距离，计算 dialog 的绝对位置
                     left: e.pageX - $('.draggable').data('evtPos').x
                 });
             });
-    
-            */
+                  */
         },
 
         edit: function (message) {
-            console.log('edit   ..', message)
-            var successsFn = function(res){
-                if(res.status === 0){
+            console.log('edit   ..', message);
+            var successsFn = function (res) {
+                if (res.status === 0) {
 
-                    Event.trigger('toast', '编辑成功')
-                    Event.trigger('waterfull')
-                }else{
-                    Event.trigger('toast', res.error)
+                    Event.trigger('toast', '编辑成功');
+                    Event.trigger('waterfull');
+                } else {
+                    Event.trigger('toast', res.error);
                 }
-            }
-            var errorFn = (res) =>{
-
-            }
-            DataBus.post(
-                NOTE_API.modify,
-                { id: this.id, text: message },
-                successsFn,
-                this.errorFn.bind(this, '编辑失败，请重新尝试')
-            )
+            };
+            var errorFn = res => {};
+            DataBus.post(NOTE_API.modify, { id: this.id, text: message }, successsFn, this.errorFn.bind(this, '编辑失败，请重新尝试'));
         },
 
         add: function (message) {
-            console.log('add   ..', message)
-            var successsFn = (res) =>{
-                if(res.status === 0){
-                    this.id = res.note.id
-                    Event.trigger('toast', '新增成功')
-                    Event.trigger('waterfull')
-                }else{
-                    this.$note.remove()
-                    Event.trigger('toast', res.error)
+            console.log('add   ..', message);
+            var successsFn = res => {
+                if (res.status === 0) {
+                    this.id = res.note.id;
+                    Event.trigger('toast', '新增成功');
+                    Event.trigger('waterfull');
+                } else {
+                    this.$note.remove();
+                    Event.trigger('toast', res.error);
                 }
-            }
-            var errorFn = (res) => {
-                
-            }
-            DataBus.post(
-                NOTE_API.create,
-                { text: message },
-                successsFn,
-                this.errorFn.bind(this, '新增失败，请重新尝试')
-            )
+            };
+            var errorFn = res => {};
+            DataBus.post(NOTE_API.create, { text: message }, successsFn, this.errorFn.bind(this, '新增失败，请重新尝试'));
         },
 
         delete: function (e) {
-            console.log('delete   ..')
-            var successsFn = (res) => {
-                if(res.status === 0){
-                    this.$note.remove()
-                    Event.trigger('toast', '删除成功')
-                    Event.trigger('waterfull')
-                }else{
-                    Event.trigger('toast', res.error)
+            console.log('delete   ..');
+            var successsFn = res => {
+                if (res.status === 0) {
+                    this.$note.remove();
+                    Event.trigger('toast', '删除成功');
+                    Event.trigger('waterfull');
+                } else {
+                    Event.trigger('toast', res.error);
                 }
-            }
-            var errorFn = (res) => {
-                
-            }
-            DataBus.post(
-                NOTE_API.deleted,
-                { id: this.id },
-                successsFn,
-                this.errorFn.bind(this, '删除失败，请重新尝试')
-            )
+            };
+            var errorFn = res => {};
+            DataBus.post(NOTE_API.deleted, { id: this.id }, successsFn, this.errorFn.bind(this, '删除失败，请重新尝试'));
         },
 
         // successsFn(message, res) {
@@ -11494,249 +10689,159 @@ var note = (function () {
         //     if (res.note.deleted) {
         //         this.$note.remove()
         //     }
-           
+
         // },
         errorFn(message, res) {
-            Event.trigger('toast', message)
+            Event.trigger('toast', message);
         }
-    }
+    };
 
     function init(options) {
-        new Note(options)
+        new Note(options);
     }
 
     return {
         init: init
-    }
+    };
+}();
 
-})()
-
-module.exports = note
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(20);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./note.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./note.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+module.exports = note;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 12 */
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, ".note-item {\n  position: absolute;\n  color: #333;\n  width: 160px;\n  margin: 20px 10px;\n  transition: all 0.5s; }\n  .note-item .note-head {\n    cursor: move;\n    height: 30px;\n    background-color: #ea9b35; }\n    .note-item .note-head .delete {\n      position: absolute;\n      cursor: pointer;\n      top: 2px;\n      right: 4px;\n      font-size: 24px;\n      color: #fff;\n      opacity: 0;\n      transition: opacity .3s; }\n    .note-item .note-head:hover .delete {\n      opacity: 1; }\n    .note-item .note-head:before {\n      cursor: move;\n      position: absolute;\n      left: 50%;\n      top: -11px;\n      margin-left: -32px;\n      content: ' ';\n      display: block;\n      width: 64px;\n      height: 18px;\n      background: #35bba3; }\n    .note-item .note-head:after {\n      position: absolute;\n      left: 50%;\n      margin-left: 32px;\n      top: -11px;\n      z-index: -1;\n      content: '';\n      display: block;\n      width: 0;\n      height: 0;\n      border-left: 5px solid #299683;\n      border-top: 18px solid transparent; }\n  .note-item .note-body {\n    min-height: 120px;\n    padding: 10px;\n    background-color: #efb04e;\n    outline: none; }\n\n.draggable {\n  opacity: 0.8;\n  cursor: move;\n  transition: none; }\n", ""]);
-
-// exports
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 21 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {var waterfull = (function () {
-    var $parentNode
-    var $item
+/* WEBPACK VAR INJECTION */(function($) {var waterfull = function () {
+    var $parentNode;
+    var $item;
     function render(parentNode) {
-        if (parentNode === 'undefined') return
-        $parentNode = parentNode
-        $item = parentNode.children()
-
-
-
+        if (parentNode === 'undefined') return;
+        $parentNode = parentNode;
+        $item = parentNode.children();
 
         var nodeWidth = $item.outerWidth(true),
             colNum = parseInt($(window).width() / nodeWidth),
-            colSumHeight = []
+            colSumHeight = [];
 
         //初始化
         for (var i = 0; i < colNum; i++) {
-            colSumHeight.push(0)
+            colSumHeight.push(0);
         }
 
         $item.each(function () {
-            var $self = $(this)
+            var $self = $(this);
 
-
-            var idx = 0
-            minSumHeight = colSumHeight[0]
+            var idx = 0;
+            minSumHeight = colSumHeight[0];
 
             for (var i = 0; i < colSumHeight.length; i++) {
                 if (colSumHeight[i] < minSumHeight) {
                     //console.log(i)
-                    idx = i
-                    minSumHeight = colSumHeight[i]
+                    idx = i;
+                    minSumHeight = colSumHeight[i];
                 }
             }
             //console.log('idx' , idx)
             $self.css({
                 left: nodeWidth * idx,
                 top: minSumHeight
-            })
-            colSumHeight[idx] += $self.outerHeight(true)
-
-        })
-
+            });
+            colSumHeight[idx] += $self.outerHeight(true);
+        });
     }
 
     function render2(parentNode) {
-        if (parentNode === 'undefined') return
-        $parentNode = parentNode
-        $item = parentNode.children()
+        if (parentNode === 'undefined') return;
+        $parentNode = parentNode;
+        $item = parentNode.children();
 
         var nodeWidth = $item.outerWidth(true),
             colNum = parseInt($(window).width() / nodeWidth),
-            colSumHeight = []
-           // console.log(colSumHeight)
+            colSumHeight = [];
+        // console.log(colSumHeight)
         for (var i = 0; i < colNum; i++) {
-            colSumHeight.push(0)
+            colSumHeight.push(0);
         }
 
         $item.each(function () {
             //获取最小数值
             let minValue = Math.min.apply(null, colSumHeight),
-                minIndex = colSumHeight.indexOf(minValue)
+                minIndex = colSumHeight.indexOf(minValue);
             $(this).css({
                 top: colSumHeight[minIndex],
                 left: nodeWidth * minIndex
-            })
+            });
 
-            colSumHeight[minIndex] += $(this).outerHeight(true)
-        })
+            colSumHeight[minIndex] += $(this).outerHeight(true);
+        });
     }
     $(window).resize(function () {
-        render($parentNode)
-    })
+        render($parentNode);
+    });
 
     return {
         init: render
-    }
+    };
+}();
 
-})()
-
-
-module.exports = waterfull
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+module.exports = waterfull;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(23)
-var Toast = (function(){
-    function toast(message, time){
-        this.message = message
-        this.didTime = time || 1000
-        this.createToast()
-        this.bindTimeToast()
-    }
-    
-    toast.prototype = {
-        createToast: function(){
-            var tpl = '<div class="toast">' + this.message + '</div>'
-            this.$toast = $(tpl)
-            $('body').append(this.$toast)
-        },
-        bindTimeToast: function(){
-            var self = this
-            self.$toast.fadeIn(300, function(){
-                setTimeout(function(){
-                    self.$toast.fadeOut(300, function(){
-                        self.$toast.remove()
-                    })
-                }, self.didTime)
-            })
-        }
+/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(15);
+var Toast = function () {
+    function toast(message, time) {
+        this.message = message;
+        this.didTime = time || 1000;
+        this.createToast();
+        this.bindTimeToast();
     }
 
-    function init(message, time){
-        return new toast(message, time)
+    toast.prototype = {
+        createToast: function () {
+            var tpl = '<div class="toast">' + this.message + '</div>';
+            this.$toast = $(tpl);
+            $('body').append(this.$toast);
+        },
+        bindTimeToast: function () {
+            var self = this;
+            self.$toast.fadeIn(300, function () {
+                setTimeout(function () {
+                    self.$toast.fadeOut(300, function () {
+                        self.$toast.remove();
+                    });
+                }, self.didTime);
+            });
+        }
+    };
+
+    function init(message, time) {
+        return new toast(message, time);
     }
     return {
-        init :init
-    }
+        init: init
+    };
+}();
 
-})()
-
-
-
-
-module.exports = Toast
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+module.exports = Toast;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 15 */
+/***/ (function(module, exports) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(24);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./toast.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./toast.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "/*\r\ntoast style 2017.10.4\r\n*/\n.toast {\n  position: fixed;\n  left: 50%;\n  transform: translateX(-50%);\n  bottom: 30px;\n  color: white;\n  background: black;\n  padding: 6px 10px;\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }\n", ""]);
-
-// exports
-
+// removed by extract-text-webpack-plugin
 
 /***/ })
-/******/ ]);
+],[4]);
+//# sourceMappingURL=index_82f0b.js.map

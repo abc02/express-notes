@@ -22,4 +22,7 @@ router.get('/', function(req, res, next) {
   res.render('index', isLoginData );
 });
 
+
+
+
 module.exports = router;
