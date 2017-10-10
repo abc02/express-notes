@@ -1,4 +1,4 @@
-require('scss/toast.scss')
+require('scss/toast.css')
 var Toast = (function(){
     function toast(message, time){
         this.message = message

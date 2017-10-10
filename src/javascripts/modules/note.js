@@ -1,4 +1,4 @@
-require('scss/note.scss')
+require('scss/note.css')
 
 
 
@@ -38,25 +38,21 @@ var note = (function () {
         defaultOptions: {
             id: '',
             $container: $('#notes-cover').length > 0 ? $('#notes-cover') : $('body'),
-            context: 'input here',
+            text: '新建便签',
             deleted: false
         },
 
         init: function (options) {
             this.options = $.extend({}, this.defaultOptions, options || {})
-            if (this.options.id) {
-                this.id = this.options.id
-            }
-            this.deleted = this.options.deleted
         },
 
         createNote: function () {
 
         var panel = '<div class="panel">'
                  + '<div class="panel-heading">'
-                 + '<h3 class="panel-title">xx说</h3>'
-                 + '<span class="delete">&times;</span></div>'
-                 + '<div class="panel-body" contenteditable="true"></div>'
+                 + '<h3 class="panel-title">panel title</h3>'
+                 + '</div>'
+                 + '<div class="panel-body" contenteditable="true">新建便签</div>'
                  + '<div class="panel-footer">Panel footer</div></div>'
 
             var tpl = '<div class="note-item">'
@@ -64,19 +60,23 @@ var note = (function () {
                 + '<div class="note-body" contenteditable="true"></div>'
                 + '</div>'
             this.$note = $(panel)
-            this.$note.find('.panel-body').html(this.options.text)
-            if (!this.deleted) {
+
+            if(this.options.user.uid){
+                this.$note.find('.panel-title').text(this.options.user.username)
+                this.$note.find('.panel-body').html(this.options.text)
+                this.$note.find('.panel-footer').text(this.options.updatedAt.split(' ')[0])
+            }
+          
+            if (!this.options.deleted) {
                 this.options.$container.append(this.$note)
             }
-            if (!this.id) {
+            if (!this.options.id) {
                 this.$note.siblings().css('zIndex', 0);
                 this.$note.css({zIndex: 999, left: '10px', top: '100px'});
             }
-            //if (!this.id) this.$note.css('buttom', '10px')
         },
 
         setStyle: function () {
-            console.log(Math.floor(Math.random() * 10))
             var color = this.colors[Math.floor(Math.random() * 10)]
             this.$note.addClass(color)
         },
@@ -102,7 +102,7 @@ var note = (function () {
             })
 
             $noteBody.on('focus', function () {
-                if ($noteBody.html() === 'input here') {
+                if ($noteBody.html() === '新建便签') {
                         $noteBody.html('')
                 } 
                 $noteBody.data('before', $noteBody.html())
@@ -110,7 +110,7 @@ var note = (function () {
                 if ($noteBody.data('before') != $noteBody.html()) {
                     $noteBody.data('before', $noteBody.html())
                     self.setLayout()
-                    if (self.id) {
+                    if (self.options.id) {
                         self.edit($noteBody.html())
                     } else {
                         self.add($noteBody.html())
@@ -158,7 +158,7 @@ var note = (function () {
             }
             DataBus.post(
                 NOTE_API.modify,
-                { id: this.id, text: message },
+                { id: this.options.id, text: message },
                 successsFn,
                 this.errorFn.bind(this, '编辑失败，请重新尝试')
             )
@@ -168,7 +168,8 @@ var note = (function () {
             console.log('add   ..', message)
             var successsFn = (res) =>{
                 if(res.status === 0){
-                    this.id = res.note.id
+                    console.log(res.note)
+                    this.options = res.note
                     Event.trigger('toast', '新增成功')
                     Event.trigger('waterfull')
                 }else{
@@ -203,15 +204,15 @@ var note = (function () {
             }
             DataBus.post(
                 NOTE_API.deleted,
-                { id: this.id },
+                { id: this.options.id },
                 successsFn,
                 this.errorFn.bind(this, '删除失败，请重新尝试')
             )
         },
 
         // successsFn(message, res) {
-        //     if (!this.id) {
-        //         this.id = res.note.id
+        //     if (!this.options.id) {
+        //         this.options.id = res.note.id
         //         this.options.id = res.note.id
         //     }
         //     if (res.note.deleted) {

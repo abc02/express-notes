@@ -13,6 +13,7 @@ router.get('/', function(req, res, next) {
     isLoginData = {
       isLogin:true,
       user:{
+        uid:req.session.user.id,
         username:req.session.user.username,
         avatar_url: req.session.user.avatar_url
       }

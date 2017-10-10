@@ -8,7 +8,7 @@
     "dev": "npm-run-all -s clean webpack start",
     "start": "node bin/www",
     "webpack": "cross-env NODE_ENV=development webpack --config ./config/webpack.config.js",
-    "watch": "onchange \"src/javascripts/**/*.js\" \"src/stylesheets/**/*.scss\" -- npm run web",
+    "watch": "onchange \"src/javascripts/**/*.js\" \"src/stylesheets/**/*.css\" -- npm run web",
     "pm2": "pm2 start bin/www --name=notes"
   },
   "dependencies": {

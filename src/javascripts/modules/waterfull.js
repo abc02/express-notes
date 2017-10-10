@@ -11,7 +11,7 @@ var waterfull = (function () {
 
 
         var nodeWidth = $item.outerWidth(true),
-            colNum = parseInt($(window).width() / nodeWidth),
+            colNum = parseInt($parentNode.width() / nodeWidth),
             colSumHeight = []
 
         //初始化

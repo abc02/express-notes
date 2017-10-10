@@ -8,9 +8,9 @@ var NOTE_API = require('api/note-api.js')
 var NoteEnter = (function(){
     function notesLoad(notes){
         console.log(notes)
-        $.each(notes, function (index, note) {
-            if(note.deleted) return 
-            Note.init(note)
+        $.each(notes, function (index, options) {
+            if(options.deleted) return 
+            Note.init(options)
         })
         Event.trigger('waterfull')
     }
@@ -29,8 +29,8 @@ var NoteEnter = (function(){
         )
     }
 
-    function add (){
-        Note.init()
+    function add (options){
+        Note.init(options)
     }
 
     return {

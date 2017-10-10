@@ -61,10 +61,10 @@ router.post('/note/create', function (req, res) {
   Users.findOne({ uid: uid }).then(user => {
     Notes.create({ uid: uid, text: note }).then(note => {
       console.log('user -> notes')
+      note.user = user.get({ plain: true })
       res.send({
         status: 0,
         note: note.get({ plain: true }),
-        user: user.get({ plain: true })
       })
     }).catch(error => {
       res.send({

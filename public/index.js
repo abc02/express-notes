@@ -162,7 +162,7 @@ var Waterfull = __webpack_require__(9);
 var Toast = __webpack_require__(10);
 
 var NOTES_COVER_DOM = $('#notes-cover');
-
+var ADD_NOTE_DOM = $('.add-note');
 NoteEnter.load();
 
 Event.on('waterfull', function (message) {
@@ -172,8 +172,15 @@ Event.on('toast', function (message) {
     Toast.init(message);
 });
 
-$('.add-note').on('click', function () {
-    NoteEnter.add();
+ADD_NOTE_DOM.on('click', function () {
+    console.log(ADD_NOTE_DOM.attr('data-uid'));
+    NoteEnter.add({
+        updatedAt: new Date().toISOString().split('T')[0],
+        user: {
+            uid: ADD_NOTE_DOM.attr('data-uid'),
+            username: ADD_NOTE_DOM.attr('data-username')
+        }
+    });
     Event.trigger('waterfull');
 });
 
@@ -195,9 +202,9 @@ var NOTE_API = __webpack_require__(2);
 var NoteEnter = function () {
     function notesLoad(notes) {
         console.log(notes);
-        $.each(notes, function (index, note) {
-            if (note.deleted) return;
-            Note.init(note);
+        $.each(notes, function (index, options) {
+            if (options.deleted) return;
+            Note.init(options);
         });
         Event.trigger('waterfull');
     }
@@ -211,8 +218,8 @@ var NoteEnter = function () {
         });
     }
 
-    function add() {
-        Note.init();
+    function add(options) {
+        Note.init(options);
     }
 
     return {
@@ -249,37 +256,37 @@ var note = function () {
         defaultOptions: {
             id: '',
             $container: $('#notes-cover').length > 0 ? $('#notes-cover') : $('body'),
-            context: 'input here',
+            text: '新建便签',
             deleted: false
         },
 
         init: function (options) {
             this.options = $.extend({}, this.defaultOptions, options || {});
-            if (this.options.id) {
-                this.id = this.options.id;
-            }
-            this.deleted = this.options.deleted;
         },
 
         createNote: function () {
 
-            var panel = '<div class="panel">' + '<div class="panel-heading">' + '<h3 class="panel-title">xx说</h3>' + '<span class="delete">&times;</span></div>' + '<div class="panel-body" contenteditable="true"></div>' + '<div class="panel-footer">Panel footer</div></div>';
+            var panel = '<div class="panel">' + '<div class="panel-heading">' + '<h3 class="panel-title">panel title</h3>' + '</div>' + '<div class="panel-body" contenteditable="true">新建便签</div>' + '<div class="panel-footer">Panel footer</div></div>';
 
             var tpl = '<div class="note-item">' + '<div class="note-head"><span class="delete">&times;</span></div>' + '<div class="note-body" contenteditable="true"></div>' + '</div>';
             this.$note = $(panel);
-            this.$note.find('.panel-body').html(this.options.text);
-            if (!this.deleted) {
+
+            if (this.options.user.uid) {
+                this.$note.find('.panel-title').text(this.options.user.username);
+                this.$note.find('.panel-body').html(this.options.text);
+                this.$note.find('.panel-footer').text(this.options.updatedAt.split(' ')[0]);
+            }
+
+            if (!this.options.deleted) {
                 this.options.$container.append(this.$note);
             }
-            if (!this.id) {
+            if (!this.options.id) {
                 this.$note.siblings().css('zIndex', 0);
                 this.$note.css({ zIndex: 999, left: '10px', top: '100px' });
             }
-            //if (!this.id) this.$note.css('buttom', '10px')
         },
 
         setStyle: function () {
-            console.log(Math.floor(Math.random() * 10));
             var color = this.colors[Math.floor(Math.random() * 10)];
             this.$note.addClass(color);
         },
@@ -305,7 +312,7 @@ var note = function () {
             });
 
             $noteBody.on('focus', function () {
-                if ($noteBody.html() === 'input here') {
+                if ($noteBody.html() === '新建便签') {
                     $noteBody.html('');
                 }
                 $noteBody.data('before', $noteBody.html());
@@ -313,7 +320,7 @@ var note = function () {
                 if ($noteBody.data('before') != $noteBody.html()) {
                     $noteBody.data('before', $noteBody.html());
                     self.setLayout();
-                    if (self.id) {
+                    if (self.options.id) {
                         self.edit($noteBody.html());
                     } else {
                         self.add($noteBody.html());
@@ -353,14 +360,15 @@ var note = function () {
                 }
             };
             var errorFn = res => {};
-            DataBus.post(NOTE_API.modify, { id: this.id, text: message }, successsFn, this.errorFn.bind(this, '编辑失败，请重新尝试'));
+            DataBus.post(NOTE_API.modify, { id: this.options.id, text: message }, successsFn, this.errorFn.bind(this, '编辑失败，请重新尝试'));
         },
 
         add: function (message) {
             console.log('add   ..', message);
             var successsFn = res => {
                 if (res.status === 0) {
-                    this.id = res.note.id;
+                    console.log(res.note);
+                    this.options = res.note;
                     Event.trigger('toast', '新增成功');
                     Event.trigger('waterfull');
                 } else {
@@ -384,12 +392,12 @@ var note = function () {
                 }
             };
             var errorFn = res => {};
-            DataBus.post(NOTE_API.deleted, { id: this.id }, successsFn, this.errorFn.bind(this, '删除失败，请重新尝试'));
+            DataBus.post(NOTE_API.deleted, { id: this.options.id }, successsFn, this.errorFn.bind(this, '删除失败，请重新尝试'));
         },
 
         // successsFn(message, res) {
-        //     if (!this.id) {
-        //         this.id = res.note.id
+        //     if (!this.options.id) {
+        //         this.options.id = res.note.id
         //         this.options.id = res.note.id
         //     }
         //     if (res.note.deleted) {
@@ -433,7 +441,7 @@ var waterfull = function () {
         $item = parentNode.children();
 
         var nodeWidth = $item.outerWidth(true),
-            colNum = parseInt($(window).width() / nodeWidth),
+            colNum = parseInt($parentNode.width() / nodeWidth),
             colSumHeight = [];
 
         //初始化
