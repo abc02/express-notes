@@ -21,34 +21,36 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, '../public'),
-        filename: '[name]_[chunkhash:5].js',
+        filename: '[name].js',
         // chunkFilename: "./[name]/[id].chunk.js",
         publicPath: ''
     },
-
-
+    externals: {
+        $: 'jquery',
+        jQuery: 'jquery',
+    },
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify(env)
             }
         }),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            bootstrap: 'bootstrap'
-        }),
-        new ExtractTextPlugin('/stylesheets/[name]_[chunkhash:5].css'),
-        new webpack.optimize.CommonsChunkPlugin({
-            minChunks: Infinity,
-            name: 'vendor',
-            filename: '/javascripts/[name]_[chunkhash:5].js',
-            minChunks: 2
-        }),
-          new HtmlWebpackPlugin({
-            template: '!!raw-loader!' + path.join(__dirname, '../views/entry/index.ejs'),
-            filename: '../views/index.ejs'  // this line decide the extension of output file.
-          })
+        // new webpack.ProvidePlugin({
+        //     $: 'jquery',
+        //     jQuery: 'jquery',
+        // }),
+        new ExtractTextPlugin('/stylesheets/[name].css'),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     minChunks: Infinity,
+        //     name: 'vendor',
+        //     filename: '[name].js',
+        //     minChunks: 2
+        // }),
+        // new HtmlWebpackPlugin({
+        //     template: '!!raw-loader!' + path.join(__dirname, '../src/template/index.ejs'),
+        //     filename: '../views/index.ejs'  // this line decide the extension of output file.
+        // }),
+  
     ],
 
 
@@ -115,7 +117,7 @@ module.exports = {
             app: path.join(PATH, '../src/javascripts/app'),
             modules: path.join(PATH, '../src/javascripts/modules'),
             scss: path.join(PATH, '../src/stylesheets'),
-            node_modules:path.join(PATH, '../node_modules/')
+            node_modules: path.join(PATH, '../node_modules/')
         }
     }
 

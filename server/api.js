@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var PATH = require('path')
-var Notes = require(PATH.join(__dirname, '../model/notes.js'))
+var {Notes,Users} = require(PATH.join(__dirname, '../model/notes.js'))
 
 /*
 request   {} 
@@ -25,9 +25,8 @@ response
 4.删除一个note   POST   /api/note/deleted   {id: noteid}
 */
 
-
 /* GET users listing. */
-router.get('/notes', function (req, res, next) {
+router.get('/notes', async function (req, res, next) {
   var findOption = { raw:true }
   if(req.session && req.session.user){
     findOption.where = {
@@ -35,18 +34,17 @@ router.get('/notes', function (req, res, next) {
     }
   }
   console.log('notes .....')
-  Notes.findAll(findOption).then(notes => {
-    res.send({
-      status:0,
-      message:'ok',
-      result:notes
-    })
-  }).catch(error => {
-    res.send({
-      status: 1,
-      error: error
-    })
-  });
+  var result = await Notes.findAll(findOption)
+  for(let i=0; i < result.length; i++){
+    let userInfo = await Users.findOne({ where: { uid: result[i].uid } })
+    result[i].user =  userInfo.get({ plain: true })
+  }
+  console.log('result:', result)
+  res.send({
+    status:0,
+    message:'ok',
+    result: result
+  })
 
 });
 
@@ -60,22 +58,22 @@ router.post('/note/create', function (req, res) {
   var note = req.body.text
   var uid  = req.session.user.id
   console.log('note/create .....')
-  //console.log(req)
-  Notes.create({uid:uid,text:note}).then(note => {
-    //SUCCESS_LOCAL.note = curNote.dataValues
-    console.log(note.get({
-      plain:true
-    }))
-    res.send({
-      status:0,
-      note: note.get({ plain:true })
-    })
-  }).catch(error => {
-    res.send({
-      status: 1,
-      error: error
-    })
-  });
+  Users.findOne({ uid: uid }).then(user => {
+    Notes.create({ uid: uid, text: note }).then(note => {
+      console.log('user -> notes')
+      res.send({
+        status: 0,
+        note: note.get({ plain: true }),
+        user: user.get({ plain: true })
+      })
+    }).catch(error => {
+      res.send({
+        status: 1,
+        error: error
+      })
+    });
+  })
+
 })
 
 router.post('/note/modify', function (req, res) {

@@ -55,6 +55,15 @@
     }
 }
 
+
+
+.panel{
+    position: absolute;
+    color: #333;
+    width: 160px;
+    margin: 20px 10px;
+    transition: all 0.5s;
+}
 .draggable {
     opacity: 0.8;
     cursor: move;

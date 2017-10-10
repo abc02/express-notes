@@ -1,5 +1,3 @@
-require('bootstrap')
-require('node_modules/bootstrap/dist/css/bootstrap.css')
 require('scss/index.scss')
 
 var NoteEnter = require('modules/note-enter.js')
@@ -10,6 +8,7 @@ var Toast = require('modules/toast.js')
 var NOTES_COVER_DOM = $('#notes-cover')
 
 NoteEnter.load()
+
 
 Event.on('waterfull',function(message){
     Waterfull.init(NOTES_COVER_DOM)

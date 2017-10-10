@@ -10,10 +10,7 @@ var NoteEnter = (function(){
         console.log(notes)
         $.each(notes, function (index, note) {
             if(note.deleted) return 
-            Note.init({
-                id: note.id,
-                context: note.text,
-            })
+            Note.init(note)
         })
         Event.trigger('waterfull')
     }

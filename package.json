@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "clean": "rimraf dist&& rimraf public/",
+    "clean": "rimraf public/",
     "web": "npm-run-all -s clean webpack",
     "dev": "npm-run-all -s clean webpack start",
     "start": "node bin/www",

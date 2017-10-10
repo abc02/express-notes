@@ -22,8 +22,17 @@ var note = (function () {
     Note.prototype = {
 
         colors: [
-            ['#ea9b35', '#efb04e'],
-            ['#dd596b', '#e672a2']
+            'panel-default',
+            'panel-primary',
+            'panel-success',
+            'panel-info',
+            'panel-warning',
+            'panel-danger',
+            'panel-primary',
+            'panel-success',
+            'panel-info',
+            'panel-warning',
+
         ],
 
         defaultOptions: {
@@ -42,12 +51,20 @@ var note = (function () {
         },
 
         createNote: function () {
+
+        var panel = '<div class="panel">'
+                 + '<div class="panel-heading">'
+                 + '<h3 class="panel-title">xx说</h3>'
+                 + '<span class="delete">&times;</span></div>'
+                 + '<div class="panel-body" contenteditable="true"></div>'
+                 + '<div class="panel-footer">Panel footer</div></div>'
+
             var tpl = '<div class="note-item">'
                 + '<div class="note-head"><span class="delete">&times;</span></div>'
                 + '<div class="note-body" contenteditable="true"></div>'
                 + '</div>'
-            this.$note = $(tpl)
-            this.$note.find('.note-body').html(this.options.context)
+            this.$note = $(panel)
+            this.$note.find('.panel-body').html(this.options.text)
             if (!this.deleted) {
                 this.options.$container.append(this.$note)
             }
@@ -59,8 +76,9 @@ var note = (function () {
         },
 
         setStyle: function () {
-            //var color = this.colors[Math.floor(Math.random() * 2)]
-            //console.log('setStyle cover')
+            console.log(Math.floor(Math.random() * 10))
+            var color = this.colors[Math.floor(Math.random() * 10)]
+            this.$note.addClass(color)
         },
 
         setLayout() {
@@ -75,8 +93,8 @@ var note = (function () {
         bindEvent: function () {
             var self = this,
                 $note = this.$note,
-                $noteHead = this.$note.find('.note-head'),
-                $noteBody = this.$note.find('.note-body'),
+                $noteHead = this.$note.find('.panel-heading'),
+                $noteBody = this.$note.find('.panel-body'),
                 $delete = this.$note.find('.delete')
 
             $delete.on('click', function () {
@@ -122,83 +140,6 @@ var note = (function () {
                 $('body').off('mousemove')
             })
 
-            // var span = $noteHead.get(0);
-            // console.log(span)
-            // span.onmousedown = function (event) {
-            //     console.log('onmousedown')
-            //     var event = event || window.event;
-            //     var chaX = event.clientX - span.offsetLeft;
-            //     var chaY = event.clientY - span.offsetTop;
-            //     console.log(event, chaX, chaY)
-            //     document.onmousemove = function (event) {
-            //         console.log('onmousemove')
-            //         var event = event || window.event;
-            //         $note.get(0).style.left = event.clientX - chaX + 'px';
-            //         $note.get(0).style.top = event.clientY - chaY + 'px';
-            //     }
-            //     document.onmouseup = function () {
-            //         document.onmousemove = null;
-            //     }
-            // }
-             // note move ==> mouse down
-            // note fixed ==> mouse up
-            // $noteHead.on('mousedown', function (e) {
-            //     let evtX = e.pageX - $note.offset().left,
-            //         evtY = e.pageY - $note.offset().top;
-            //     $note.addClass('draggable').data('evtPos', {x: evtX, y: evtY});
-            // }).on('mouseup', function () {
-            //     $note.removeClass('draggable').removeData('evtPos');
-            // });
-
-            // // set position ==> mouse move
-            // $('body').on('mousemove', function (e) {
-            //     $('.draggable').length && $('.draggable').offset({
-            //         top: e.pageY - $('.draggable').data('evtPos').y,
-            //         left: e.pageX - $('.draggable').data('evtPos').x
-            //     });
-            // });
-
-            // //note的拖拽效果
-            // $noteHead.on('mousedown', function (e) {
-            //     var eventX = e.pageX - $note.offset().left,
-            //         eventY = e.pageY - $note.offset().top;
-            //     $note.addClass('draggable')
-            //         .css('zIndex', 999)
-            //         .siblings()
-            //         .css('zIndex', 0);
-            //     $('body').on('mousemove', function (e) {
-            //         e.preventDefault();
-            //         $('.draggable').length && $('.draggable').offset({
-            //             top: e.pageY - eventY,
-            //             left: e.pageX - eventX
-            //         });
-            //     });
-            // }).on('mouseup', function () {
-            //     $note.removeClass('draggable');
-            // });
-
-
-
-            /*
-            //设置笔记的移动
-            $noteHead.on('mousedown', function (e) {
-                var evtX = e.pageX - $note.offset().left,   //evtX 计算事件的触发点在 dialog内部到 dialog 的左边缘的距离
-                    evtY = e.pageY - $note.offset().top;
-                $note.addClass('draggable').data('evtPos', { x: evtX, y: evtY }); //把事件到 dialog 边缘的距离保存下来
-                console.log('mousedown')
-            }).on('mouseup', function () {
-                $note.removeClass('draggable').removeData('pos');
-                console.log('mouseup')
-            });
-    
-            $('body').on('mousemove', function (e) {
-                $('.draggable').length && $('.draggable').offset({
-                    top: e.pageY - $('.draggable').data('evtPos').y,    // 当用户鼠标移动时，根据鼠标的位置和前面保存的距离，计算 dialog 的绝对位置
-                    left: e.pageX - $('.draggable').data('evtPos').x
-                });
-            });
-    
-            */
         },
 
         edit: function (message) {

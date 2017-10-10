@@ -19,10 +19,38 @@ var sequelize = new Sequelize(undefined, undefined, undefined, {
       defaultValue:false
     }
   });
-
+var Users =  sequelize.define('users', {
+  uid: {
+    type: Sequelize.STRING
+  },
+  provider:{
+    type: Sequelize.STRING
+  },
+  username:{
+    type: Sequelize.STRING
+  },
+  avatar:{
+    type: Sequelize.STRING
+  }
+})
   Notes.sync()
+  Users.sync()
+//   Users.findOrCreate({where: {uid: '13544002'}, defaults: {username: 'Technical Lead JavaScript'}})
+//   .spread((user, created) => {
+//     console.log(user.get({
+//       plain: true
+//     }))
+//     console.log(created)
+// // })
+// Users.findAll({raw: true}).then(projects => {
+//   // projects will be an array of all Project instances
+//   console.log(projects)
+// })
+
+
+
   //force: true will drop the table if it already exists
-//  Notes.sync({force:true})
+// Notes.sync({force:true})
   /*
   Notes.sync().then(() => {
     // Table created
@@ -51,4 +79,7 @@ var sequelize = new Sequelize(undefined, undefined, undefined, {
 //   })
 // })
 
-module.exports = Notes
+module.exports = {
+  Users,
+  Notes,
+}
