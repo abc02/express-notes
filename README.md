@@ -7,10 +7,10 @@
 
 ```bash
 # 克隆仓库
-git clone git@github.com:yunyu950908/project-node-express.git
+git clone git@github.com:abc02/express-notes.git
 # cd 到仓库目录后安装依赖
 npm i
-# 启动本地服务器，打开 http://localhost:3000
+# 启动本地服务器，打开 http://localhost:3030
 npm start
 # 当然你也可以指定端口( 比如开一个2233娘端口 )
 PORT=2233 node ./bin/www
