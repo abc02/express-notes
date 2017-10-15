@@ -6,14 +6,14 @@ var GitHubStrategy = require('passport-github2').Strategy
 var { Users } = require(PATH.join(__dirname, '../model/notes.js'))
 
 
-var GITHUB_CLIENT_ID = '6518df0434a4b048600a'
-var GITHUB_CLIENT_SECRET = '3eb372d7e9f89c7a68c9bfdac3f780c9b5dc706d'
-var CALLBACK_URL = "http://localhost:3030/auth/github/callback"
+// var GITHUB_CLIENT_ID = '6518df0434a4b048600a'
+// var GITHUB_CLIENT_SECRET = '3eb372d7e9f89c7a68c9bfdac3f780c9b5dc706d'
+// var CALLBACK_URL = "http://localhost:3030/auth/github/callback"
 
 
-// var GITHUB_CLIENT_ID = '503084ad3a85a84d51f6'
-// var GITHUB_CLIENT_SECRET = '4c68e1f15238a2cfe174f9e77f82a263d9b69852'
-// var CALLBACK_URL = "http://notes.abc02.info/auth/github/callback"
+var GITHUB_CLIENT_ID = '503084ad3a85a84d51f6'
+var GITHUB_CLIENT_SECRET = '4c68e1f15238a2cfe174f9e77f82a263d9b69852'
+var CALLBACK_URL = "http://notes.abc02.info/auth/github/callback"
 
 
 passport.serializeUser(function (user, done) {
@@ -85,7 +85,7 @@ router.get('/github/callback',
             avatar_url: req.user._json.avatar_url,
 
         }
-        Users.findOrCreate({ where: { uid: '13544002' }, 
+        Users.findOrCreate({ where: { uid: req.user.id }, 
         defaults: { 
             username: req.user.username,
             username: req.user.username,

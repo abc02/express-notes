@@ -27,19 +27,13 @@ response
 
 /* GET users listing. */
 router.get('/notes', async function (req, res, next) {
-  var findOption = { raw:true }
-  if(req.session && req.session.user){
-    findOption.where = {
-      uid: req.session.user.id
-    }
-  }
   console.log('notes .....')
-  var result = await Notes.findAll(findOption)
+  var result = await Notes.findAll({ raw:true })
   for(let i=0; i < result.length; i++){
     let userInfo = await Users.findOne({ where: { uid: result[i].uid } })
     result[i].user =  userInfo.get({ plain: true })
   }
-  console.log('result:', result)
+  console.log('result:', result.length)
   res.send({
     status:0,
     message:'ok',
